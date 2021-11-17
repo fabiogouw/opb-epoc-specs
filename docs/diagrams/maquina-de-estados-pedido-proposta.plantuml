@@ -1,0 +1,26 @@
+@startuml
+
+state "Proposta solicitada" as Solicitado
+state "Consentimento solicitado no transmissor" as ConsentSolicitado
+state "Consentimento rejeitado" as ConsentRejeitado
+state "Proposta Gerada" as PropostaGerada
+state "Proposta Aceita" as PropostaAceita
+state "Proposta Rejeitada" as PropostaRejeitada
+state "Proposta Expirada" as PropostaExpirada
+
+[*] --> Solicitado
+Solicitado --> ConsentSolicitado
+Solicitado --> PropostaGerada
+ConsentSolicitado --> ConsentRejeitado
+ConsentSolicitado --> PropostaGerada
+ConsentSolicitado --> PropostaExpirada
+ConsentRejeitado --> [*]
+PropostaGerada --> PropostaAceita
+PropostaGerada --> PropostaRejeitada
+PropostaAceita --> [*]
+PropostaRejeitada --> [*]
+Solicitado --> PropostaExpirada
+PropostaGerada --> PropostaExpirada
+PropostaExpirada --> [*]
+
+@enduml
