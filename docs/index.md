@@ -22,8 +22,9 @@ Dado que o Correspondente Digital não faz parte do ecossistema do Open Banking,
 
 #### Encaminhamento de Pedido de Proposta
 
-Request: POST /credit-proposals
+Request: POST /credit-proposals/v1/credit-proposals
 
+Exemplo:
 ```json
 {
     "bankCorrespondentId": "00000000000000",  // identificação do correspondente digital
@@ -67,7 +68,7 @@ Response (201 Created)
         "creditProposalId": "a88631a9-ab68-4fce-af0a-87107d4b64d4"  // identificação da requisição da proposta de crédito
     },
     "links": {
-        "self": "https://api.banco.com.br/open-banking/api/credit-proposals/v1/a88631a9-ab68-4fce-af0a-87107d4b64d4"
+        "self": "https://api.banco.com.br/open-banking//credit-proposals/v1/credit-proposals/a88631a9-ab68-4fce-af0a-87107d4b64d4"
     },
     "meta": {
         "requestTime": "2021-11-30T09:41:23"
@@ -81,10 +82,11 @@ Esta API é usada pelos correspondentes digitais para obter os detalhes e o stat
 
 A proposta é utilizar polling periódico para que essa comunicação seja feita, mas podemos considerar também a alternativa de uso de webhooks, de forma que a IF receptora possa avisar o correspondente digital que há alguma mudança no status, de forma a otimizar a comunicação.
 
-Request: GET /credit-proposals/{id}
+Request: GET /credit-proposals/v1/credit-proposals/{id}
 
+Exemplo:
 ```
-GET /credit-proposals/v1/a88631a9-ab68-4fce-af0a-87107d4b64d4
+GET /credit-proposals/v1/credit-proposals/a88631a9-ab68-4fce-af0a-87107d4b64d4
 ```
 
 Response (200 ok)
@@ -116,8 +118,8 @@ Response (200 ok)
         "status": "PROPOSTA_GERADA"
     },
     "links": {
-        "self": "https://api.banco.com.br/open-banking/api/credit-proposals/v1/a88631a9-ab68-4fce-af0a-87107d4b64d4",
-        "proposals": "https://api.banco.com.br/open-banking/api/credit-proposals/v1/a88631a9-ab68-4fce-af0a-87107d4b64d4/proposals"
+        "self": "https://api.banco.com.br/open-banking/credit-proposals/v1/credit-proposals/a88631a9-ab68-4fce-af0a-87107d4b64d4",
+        "proposals": "https://api.banco.com.br/open-banking/credit-proposals/v1/credit-proposals/a88631a9-ab68-4fce-af0a-87107d4b64d4/proposals"
     },
     "meta": {
         "requestTime": "2021-11-30T10:35:10"
@@ -127,10 +129,11 @@ Response (200 ok)
 
 #### Consulta de Proposta Gerada
 
-Request GET /credit-proposals/{id}/proposals
+Request GET /credit-proposals/v1/credit-proposals/{id}/proposals
 
+Exemplo:
 ```
-GET /credit-proposals/v1/a88631a9-ab68-4fce-af0a-87107d4b64d4/proposals
+GET /credit-proposals/v1/credit-proposals/a88631a9-ab68-4fce-af0a-87107d4b64d4/proposals
 ```
 
 Response (200 ok)
@@ -202,8 +205,8 @@ Response (200 ok)
         }
     ],
     "links": {
-        "self": "https://api.banco.com.br/open-banking/api/credit-proposals/v1/a88631a9-ab68-4fce-af0a-87107d4b64d4/proposals",
-        "credit-proposal-detail": "https://api.banco.com.br/open-banking/api/credit-proposals/v1/a88631a9-ab68-4fce-af0a-87107d4b64d4"
+        "self": "https://api.banco.com.br/open-banking/credit-proposals/v1/credit-proposals/a88631a9-ab68-4fce-af0a-87107d4b64d4/proposals",
+        "credit-proposal-detail": "https://api.banco.com.br/open-banking/credit-proposals/v1/credit-proposals/a88631a9-ab68-4fce-af0a-87107d4b64d4"
     },
     "meta": {
         "requestTime": "2021-11-30T10:35:10"
@@ -213,9 +216,12 @@ Response (200 ok)
 
 #### Atualização de Uso da Proposta
 
-Request PATCH /credit-proposals/{id}/proposals/{id}
+Request PATCH /credit-proposals/v1/credit-proposals/{id}/proposals/{id}
 
-Exemplo PATCH /credit-proposals/v1/a88631a9-ab68-4fce-af0a-87107d4b64d4/proposals/91240d49-0504-412c-b942-65b34bb9f207
+Exemplo 
+```
+PATCH /credit-proposals/v1/credit-proposals/a88631a9-ab68-4fce-af0a-87107d4b64d4/proposals/91240d49-0504-412c-b942-65b34bb9f207
+```
 
 ```json
 {
@@ -243,3 +249,38 @@ Response (200 ok)
 ### API na Instituição Financeira Transmissora
 
 #### Pedido de Consentimento em Lote
+
+Criação de consentimento /consents/v2/consents
+
+```json
+{
+  "data": {
+    "loggedUser": {
+      "document": {
+        "identification": "22222222222222",
+        "rel": "CNPJ"
+      }
+    },
+    "businessEntity": {
+      "document": {
+        "identification": "11111111111111",
+        "rel": "CNPJ"
+      }
+    },
+    "permissions": [
+      "ACCOUNTS_READ",
+      "ACCOUNTS_OVERDRAFT_LIMITS_READ",
+      "RESOURCES_READ"
+    ],
+    "objective": {
+        "type": "PROPOSTA_DE_CREDITO",
+        "detail": {
+            "totalOfDataProviders": 2
+        }
+    },
+    "expirationDateTime": "2021-05-21T08:30:00Z",
+    "transactionFromDateTime": "2021-01-01T00:00:00Z",
+    "transactionToDateTime": "2021-02-01T23:59:59Z"
+  }
+}
+```
