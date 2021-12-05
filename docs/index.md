@@ -209,6 +209,8 @@ Response (200 ok)
         "credit-proposal-detail": "https://api.banco.com.br/open-banking/credit-proposals/v1/credit-proposals/a88631a9-ab68-4fce-af0a-87107d4b64d4"
     },
     "meta": {
+        "totalRecords": 1,
+        "totalPages": 1,
         "requestTime": "2021-11-30T10:35:10"
     }
 }
@@ -282,7 +284,7 @@ Criação de consentimento /consents/v1/consents
     "groupingKey": "00000000000000-6be83e91-4e54-4b10-9704-e781bca001c1",
     "totalOfDataProviders": 2,
     "dataProviderPosition": 1,
-    // TODO: campos para informar os detalhes da operação para serem exibidos na jornada de consentimento
+    // TODO: inclur campos para informar os detalhes da operação para serem exibidos na jornada de consentimento
     "expirationDateTime": "2021-12-05T08:30:00Z",
     "transactionFromDateTime": "2021-12-05T00:00:00Z",
     "transactionToDateTime": "2021-12-05T23:59:59Z"
