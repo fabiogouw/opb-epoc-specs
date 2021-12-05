@@ -28,7 +28,7 @@ Exemplo:
 ```json
 {
     "bankCorrespondentId": "00000000000000",  // identificação do correspondente digital
-    "proposalRequestId":"00000000000000-6be83e91-4e54-4b10-9704-e781bca001c1",    // identificação da requisição da proposta de crédito, gerado unicamente pelo correspondente
+    "proposalRequestKey":"00000000000000-6be83e91-4e54-4b10-9704-e781bca001c1",    // chave única da requisição da proposta de crédito, gerado unicamente pelo correspondente
     "businessEntity": {
         "document": {
             "identitication": "11111111111",
@@ -40,7 +40,7 @@ Exemplo:
             "0cf6dd54-0a00-4ee2-8af3-71fc9ed1da85", // campo AuthorisationServerId que identifica a marca no diretório
             "53da2398-c211-457c-bf65-d1b233f89f61",
         ],  // identificação das IFs transmissoras (que poderão dar o consentimento / compartilhamento)
-        "permissionsRequired": [
+        "permissions": [
             "RESOURCES_READ",
             "CUSTOMERS_PERSONAL_IDENTIFICATIONS_READ",
             "ACCOUNTS_READ",
@@ -96,7 +96,7 @@ Response (200 ok)
     "data": {
         "creditProposalId": "a88631a9-ab68-4fce-af0a-87107d4b64d4",
         "bankCorrespondentId": "00000000000000",  // identificação do correspondente digital
-        "proposalRequestId":"00000000000000-6be83e91-4e54-4b10-9704-e781bca001c1",    // identificação da requisição da proposta de crédito, gerado unicamente pelo correspondente
+        "proposalRequestKey":"00000000000000-6be83e91-4e54-4b10-9704-e781bca001c1",    // chave única da requisição da proposta de crédito, gerado unicamente pelo correspondente
         "businessEntity": {
             "document": {
                 "identitication": "11111111111",
@@ -108,7 +108,7 @@ Response (200 ok)
                 "0cf6dd54-0a00-4ee2-8af3-71fc9ed1da85", // campo AuthorisationServerId que identifica a marca no diretório
                 "53da2398-c211-457c-bf65-d1b233f89f61",
             ],  // identificação das IFs transmissoras (que poderão dar o consentimento / compartilhamento)
-            "permissionsRequired": [
+            "permissions": [
                 "RESOURCES_READ",
                 "CUSTOMERS_PERSONAL_IDENTIFICATIONS_READ",
                 "ACCOUNTS_READ",
@@ -146,7 +146,7 @@ Response (200 ok)
             "productType": "EMPRESTIMOS",
             "productSubType": "CREDITO_PESSOAL_SEM_CONSIGNACAO", // modalidade do 3040
             "dataShareUsed": true,
-            "propostaValidity": "2021-12-01T10:35:10",  // validade da proposta
+            "proposalExpiration": "2021-12-01T10:35:10",  // validade da proposta
             "detail": {
                 "contractAmount": 5000, // montante total a ser pago
                 "instalmentValue": 100, //valor da parcela
@@ -250,7 +250,14 @@ Response (200 ok)
 
 #### Pedido de Consentimento em Lote
 
-Criação de consentimento /consents/v2/consents
+Apesar de serem fases distintas, a mesma API de consentimento pode ser usada para atender os requisitos da fase 2 e 3C, visto que a finalidade é a mesma: compartilhar dados do cliente que estão na transmissora para alguma receptora. Por isso, não faz sentido a criação de uma nova API, visto que ela teria o mesmo escopo da atual.
+
+A sugestão aqui é a adição de campos opcionais, ou seja, sem quebra de contrato, para que o consentimento possa ser tratado com a correta experiência na hora do cliente aprovar o compartilhamento. São esses campos:
+- groupingKey: É a chave que identifica um grupo de consentimentos que devem ser exibidos ao mesmo tempo ao cliente, para manter a experiência única. No caso, é a chave gerada pelo Correspondente Digital, no ínicio do processo.
+- totalOfDataProviders: é a quantidade de receptoras que receberão os dados consentidos do cliente.
+- dataProviderPosition: é a posição que determinada receptora possui para a gestão da experiência, no momento da aprovação do consentimento.
+
+Criação de consentimento /consents/v1/consents
 
 ```json
 {
@@ -263,8 +270,8 @@ Criação de consentimento /consents/v2/consents
     },
     "businessEntity": {
       "document": {
-        "identification": "11111111111111",
-        "rel": "CNPJ"
+        "identification": "11111111111",
+        "rel": "CPF"
       }
     },
     "permissions": [
@@ -272,15 +279,13 @@ Criação de consentimento /consents/v2/consents
       "ACCOUNTS_OVERDRAFT_LIMITS_READ",
       "RESOURCES_READ"
     ],
-    "objective": {
-        "type": "PROPOSTA_DE_CREDITO",
-        "detail": {
-            "totalOfDataProviders": 2
-        }
-    },
-    "expirationDateTime": "2021-05-21T08:30:00Z",
-    "transactionFromDateTime": "2021-01-01T00:00:00Z",
-    "transactionToDateTime": "2021-02-01T23:59:59Z"
+    "groupingKey": "00000000000000-6be83e91-4e54-4b10-9704-e781bca001c1",
+    "totalOfDataProviders": 2,
+    "dataProviderPosition": 1,
+    // TODO: campos para informar os detalhes da operação para serem exibidos na jornada de consentimento
+    "expirationDateTime": "2021-12-05T08:30:00Z",
+    "transactionFromDateTime": "2021-12-05T00:00:00Z",
+    "transactionToDateTime": "2021-12-05T23:59:59Z"
   }
 }
 ```
